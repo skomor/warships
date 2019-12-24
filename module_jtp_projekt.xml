@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_jtp_projekt" default="compile.module.jtp_projekt">
+  <dirname property="module.jtp_projekt.basedir" file="${ant.file.module_jtp_projekt}"/>
+  
+  <property name="module.jdk.home.jtp_projekt" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jtp_projekt" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jtp_projekt" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.jtp_projekt" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="jtp_projekt.output.dir" value="${module.jtp_projekt.basedir}/out/production/JTP_PROJEKT"/>
+  <property name="jtp_projekt.testoutput.dir" value="${module.jtp_projekt.basedir}/out/test/JTP_PROJEKT"/>
+  
+  <path id="jtp_projekt.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jtp_projekt.module.production.classpath">
+    <path refid="${module.jdk.classpath.jtp_projekt}"/>
+  </path>
+  
+  <path id="jtp_projekt.runtime.production.module.classpath">
+    <pathelement location="${jtp_projekt.output.dir}"/>
+  </path>
+  
+  <path id="jtp_projekt.module.classpath">
+    <path refid="${module.jdk.classpath.jtp_projekt}"/>
+    <pathelement location="${jtp_projekt.output.dir}"/>
+  </path>
+  
+  <path id="jtp_projekt.runtime.module.classpath">
+    <pathelement location="${jtp_projekt.testoutput.dir}"/>
+    <pathelement location="${jtp_projekt.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jtp_projekt">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jtp_projekt">
+    <patternset refid="excluded.from.module.jtp_projekt"/>
+  </patternset>
+  
+  <path id="jtp_projekt.module.sourcepath">
+    <dirset dir="${module.jtp_projekt.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.jtp_projekt" depends="compile.module.jtp_projekt.production,compile.module.jtp_projekt.tests" description="Compile module JTP_PROJEKT"/>
+  
+  <target name="compile.module.jtp_projekt.production" depends="register.custom.compilers" description="Compile module JTP_PROJEKT; production classes">
+    <mkdir dir="${jtp_projekt.output.dir}"/>
+    <javac2 destdir="${jtp_projekt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jtp_projekt}/javac">
+      <compilerarg line="${compiler.args.jtp_projekt}"/>
+      <bootclasspath refid="jtp_projekt.module.bootclasspath"/>
+      <classpath refid="jtp_projekt.module.production.classpath"/>
+      <src refid="jtp_projekt.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jtp_projekt"/>
+    </javac2>
+    
+    <copy todir="${jtp_projekt.output.dir}">
+      <fileset dir="${module.jtp_projekt.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.jtp_projekt.tests" depends="register.custom.compilers,compile.module.jtp_projekt.production" description="compile module JTP_PROJEKT; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.jtp_projekt" description="cleanup module">
+    <delete dir="${jtp_projekt.output.dir}"/>
+    <delete dir="${jtp_projekt.testoutput.dir}"/>
+  </target>
+</project>
